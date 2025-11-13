@@ -3,9 +3,7 @@ package com.rial.orderspring.service;
 import com.rial.orderspring.enums.ProductState;
 import com.rial.orderspring.model.Product;
 
-import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
 
@@ -13,15 +11,15 @@ public interface ProductService {
 
     List<Product> findAll();
 
-    Optional<List<Product>> findByProductState(ProductState productState);
+    List<Product> findByProductState(ProductState productState);
 
-    Optional<Product> findById(String id);
+    Product findById(String id);
 
-    Optional<Product> findByName(String name);
+    Product findByName(String name);
 
-    Product update(String id, Product updatedProduct) throws Exception;
+    Product update(String id, Product updatedProduct);
 
-    void deleteById(String id) throws Exception;
+    void deleteById(String id);
 
 
 }

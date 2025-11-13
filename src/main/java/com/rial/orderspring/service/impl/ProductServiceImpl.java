@@ -1,20 +1,24 @@
 package com.rial.orderspring.service.impl;
 
+import com.rial.orderspring.exception.ProductNotFoundException;
 import com.rial.orderspring.enums.ProductState;
 import com.rial.orderspring.model.Product;
 import com.rial.orderspring.repository.ProductRepository;
 import com.rial.orderspring.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+
+    private final ProductRepository productRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     public Product save(Product product) {
@@ -27,36 +31,37 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<List<Product>> findByProductState(ProductState productState) {
-        return productRepository.findByProductState(productState);
+    public Product findById(String id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     @Override
-    public Optional<Product> findById(String id) {
-        return productRepository.findById(id);
+    public Product findByName(String name) {
+        return productRepository.findByName(name)
+                .orElseThrow(() -> new ProductNotFoundException(name));
     }
 
     @Override
-    public Optional<Product> findByName(String name) {
-        return productRepository.findByName(name);
+    public List<Product> findByProductState(ProductState state) {
+        return productRepository.findByProductState(state)
+                .orElseThrow(() -> new ProductNotFoundException(String.valueOf(state)));
     }
 
     @Override
-    public Product update(String id, Product updatedProduct) throws Exception {
-        Product actualProduct = productRepository.findById(id).orElseThrow(() -> new Exception("Producto con ID" +  id + " no Encontrado"));
+    public Product update(String id, Product updatedProduct) {
 
-        actualProduct.setName(updatedProduct.getName());
-        actualProduct.setDescription(updatedProduct.getDescription());
-        actualProduct.setPrice(updatedProduct.getPrice());
-        actualProduct.setProductState(updatedProduct.getProductState());
+        Product actualProduct = findById(id);
+
+        BeanUtils.copyProperties(updatedProduct, actualProduct, "id");
 
         return productRepository.save(actualProduct);
     }
 
     @Override
-    public void deleteById(String id) throws Exception {
+    public void deleteById(String id) {
 
-        Product productoExistente = productRepository.findById(id).orElseThrow(() -> new Exception("Producto con ID" +  id + " no Encontrado"));
+        Product productoExistente = findById(id);
 
         productRepository.delete(productoExistente);
 
