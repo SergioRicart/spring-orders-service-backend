@@ -17,9 +17,9 @@ public interface ProductService {
 
     Product findByName(String name);
 
-    Product update(String id, Product updatedProduct) throws Exception;
+    Product update(String id, Product updatedProduct);
 
-    void deleteById(String id) throws Exception;
+    void deleteById(String id);
 
 
 }
