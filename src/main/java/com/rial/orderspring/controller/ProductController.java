@@ -1,28 +1,22 @@
 package com.rial.orderspring.controller;
 
-import com.rial.orderspring.ProductNotFoundException;
+import com.rial.orderspring.exception.ProductNotFoundException;
 import com.rial.orderspring.enums.ProductState;
 import com.rial.orderspring.model.Product;
-import com.rial.orderspring.service.ProductService;
 import com.rial.orderspring.service.impl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController{
 
 
+    @Autowired
     ProductServiceImpl productServiceImpl;
-
-/*    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }*/
 
     @PostMapping("/save")
     public ResponseEntity<Product> save(@RequestBody Product product) {

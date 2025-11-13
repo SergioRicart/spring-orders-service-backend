@@ -1,6 +1,6 @@
 package com.rial.orderspring.service.impl;
 
-import com.rial.orderspring.ProductNotFoundException;
+import com.rial.orderspring.exception.ProductNotFoundException;
 import com.rial.orderspring.enums.ProductState;
 import com.rial.orderspring.model.Product;
 import com.rial.orderspring.repository.ProductRepository;

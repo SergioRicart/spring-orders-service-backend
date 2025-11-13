@@ -3,9 +3,7 @@ package com.rial.orderspring.service;
 import com.rial.orderspring.enums.ProductState;
 import com.rial.orderspring.model.Product;
 
-import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
 

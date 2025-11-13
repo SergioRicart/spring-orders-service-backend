@@ -1,4 +1,4 @@
-package com.rial.orderspring;
+package com.rial.orderspring.exception;
 
 public class ProductNotFoundException extends RuntimeException {
 
