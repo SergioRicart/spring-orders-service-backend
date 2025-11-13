@@ -13,11 +13,11 @@ public interface ProductService {
 
     List<Product> findAll();
 
-    Optional<List<Product>> findByProductState(ProductState productState);
+    List<Product> findByProductState(ProductState productState);
 
-    Optional<Product> findById(String id);
+    Product findById(String id);
 
-    Optional<Product> findByName(String name);
+    Product findByName(String name);
 
     Product update(String id, Product updatedProduct) throws Exception;
 

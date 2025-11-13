@@ -19,11 +19,9 @@ public class Order{
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Temporal(TemporalType.DATE)
-    private LocalDateTime  orderDay;
+    private LocalDateTime  orderDateTime;
 
-    @Temporal(TemporalType.DATE)
-    private LocalDateTime deliveryDay;
+    private LocalDateTime deliveryDateTime;
 
     @Enumerated(EnumType.STRING)
     private PaymentState paymentState;
