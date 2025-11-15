@@ -19,7 +19,6 @@ buildNumber.properties
 *.seed
 *.pid.lock
 application-*.yml
-application-*.properties
 .env
 .env.*
 .DS_Store
