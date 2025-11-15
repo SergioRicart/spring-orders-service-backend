@@ -1,14 +1,16 @@
 package com.rial.orderspring.service;
 
 import com.rial.orderspring.model.Client;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ClientService {
 
-    Client create(Client Client);
+    Client create(Client client);
 
-    List<Client> findAll();
+    Page<Client> findAll(Pageable pageable);
 
     Client findById(String id);
 

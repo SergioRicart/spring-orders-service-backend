@@ -2,6 +2,9 @@ package com.rial.orderspring.controller;
 
 import com.rial.orderspring.model.Client;
 import com.rial.orderspring.service.ClientService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,14 +20,17 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @GetMapping("/crete")
+    @GetMapping("/create")
     public ResponseEntity<Client> create(@RequestBody Client client) {
         return ResponseEntity.ok(clientService.create(client)) ;
     }
 
     @GetMapping
-    public ResponseEntity<List<Client>> findAll() {
-        return ResponseEntity.ok(clientService.findAll());
+    public ResponseEntity<Page<Client>> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size ) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(clientService.findAll(pageable));
     }
 
     @GetMapping("/get/id/{id}")
