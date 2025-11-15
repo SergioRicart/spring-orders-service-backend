@@ -4,7 +4,6 @@ import com.rial.orderspring.exception.ProductNotFoundException;
 import com.rial.orderspring.enums.ProductState;
 import com.rial.orderspring.model.Product;
 import com.rial.orderspring.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +21,10 @@ public class ProductController{
     }
 
 
-    @PostMapping("/save")
-    public ResponseEntity<Product> save(@RequestBody Product product) {
+    @PostMapping("/create")
+    public ResponseEntity<Product> create(@RequestBody Product product) {
 
-        return ResponseEntity.ok(productService.save(product));
+        return ResponseEntity.ok(productService.create(product));
     }
 
     /* AL CONSULTAR LA RUTA POR DEFECTO MUESTRA TODOS LOS PRODUCTOS */
@@ -35,19 +34,19 @@ public class ProductController{
         return ResponseEntity.ok(productService.findAll());
     }
 
-    @GetMapping("/find/id/{id}")
+    @GetMapping("/get/id/{id}")
     public ResponseEntity<?> findById(@PathVariable String id) throws ProductNotFoundException {
 
         return ResponseEntity.ok(productService.findById(id));
     }
 
-    @GetMapping("/find/name/{name}")
+    @GetMapping("/get/name/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) throws ProductNotFoundException {
 
         return ResponseEntity.ok(productService.findByName(name));
     }
 
-    @GetMapping("/find/state/{state}")
+    @GetMapping("/get/state/{state}")
     public ResponseEntity<?> findByProductState(@PathVariable ProductState state) throws ProductNotFoundException {
 
         return ResponseEntity.ok(productService.findByProductState(state));
