@@ -2,6 +2,8 @@ package com.rial.orderspring.service;
 
 import com.rial.orderspring.enums.OrderState;
 import com.rial.orderspring.model.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +14,7 @@ public interface OrderService {
 
     Order create(Order order);
 
-    List<Order> findAll();
+    Page<Order> findAll(Pageable pageable);
 
     Order findById(String id);
 
