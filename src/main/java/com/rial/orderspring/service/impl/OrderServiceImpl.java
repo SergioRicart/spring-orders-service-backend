@@ -1,8 +1,77 @@
 package com.rial.orderspring.service.impl;
 
+import com.rial.orderspring.enums.OrderState;
+import com.rial.orderspring.exception.OrderNotFoundException;
+import com.rial.orderspring.model.Order;
+import com.rial.orderspring.repository.OrderRepository;
 import com.rial.orderspring.service.OrderService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
+
+    private final OrderRepository orderRepository;
+
+    public OrderServiceImpl(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
+    @Override
+    public Order create(Order order) {
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public Page<Order> findAll(Pageable pageable) {
+        return orderRepository.findAll(pageable);
+    }
+
+    @Override
+    public Order findById(String id) {
+        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+    }
+
+    @Override
+    public List<Order> findByOrderDateTime(LocalDateTime orderDateTime) {
+        return orderRepository.findByOrderDateTime(orderDateTime).orElseThrow(() -> new OrderNotFoundException(orderDateTime));
+    }
+
+    @Override
+    public List<Order> findByDeliveryDateTime(LocalDateTime deliveryDateTime) {
+        return orderRepository.findByDeliveryDateTime(deliveryDateTime).orElseThrow(() -> new OrderNotFoundException(deliveryDateTime));
+    }
+
+    @Override
+    public List<Order> findByOrderState(OrderState orderState) {
+        return orderRepository.findByOrderState(orderState).orElseThrow(() -> new OrderNotFoundException(orderState.name()));
+    }
+
+    @Override
+    public List<Order> findByClientId(String clientId) {
+
+        return orderRepository.findByClientId(clientId).orElseThrow(() -> new OrderNotFoundException(clientId));
+    }
+
+    @Override
+    public Order update(String id, Order updatedOrder) {
+        Order actualOrder = findById(id);
+
+        BeanUtils.copyProperties(updatedOrder, actualOrder, "id");
+
+        return orderRepository.save(actualOrder);
+    }
+
+    @Override
+    public void deleteById(String id) {
+
+        Order order = findById(id);
+
+        orderRepository.delete(order);
+    }
 }
