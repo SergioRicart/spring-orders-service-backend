@@ -5,6 +5,7 @@ import com.rial.orderspring.exception.OrderNotFoundException;
 import com.rial.orderspring.model.Order;
 import com.rial.orderspring.repository.OrderRepository;
 import com.rial.orderspring.service.OrderService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -51,16 +52,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findByClientId(String clientId) {
-        return null;
+
+        return orderRepository.findByClientId(clientId).orElseThrow(() -> new OrderNotFoundException(clientId));
     }
 
     @Override
     public Order update(String id, Order updatedOrder) {
-        return null;
+        Order actualOrder = findById(id);
+
+        BeanUtils.copyProperties(updatedOrder, actualOrder, "id");
+
+        return orderRepository.save(actualOrder);
     }
 
     @Override
     public void deleteById(String id) {
 
+        Order order = findById(id);
+
+        orderRepository.delete(order);
     }
 }

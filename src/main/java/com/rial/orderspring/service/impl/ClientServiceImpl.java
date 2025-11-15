@@ -68,8 +68,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void deleteById(String id) {
 
-        Client productoExistente = findById(id);
+        Client client = findById(id);
 
-        clientRepository.delete(productoExistente);
+        clientRepository.delete(client);
     }
 }
