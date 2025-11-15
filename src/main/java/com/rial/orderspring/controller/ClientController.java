@@ -1,9 +1,67 @@
 package com.rial.orderspring.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.rial.orderspring.model.Client;
+import com.rial.orderspring.service.ClientService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients")
 public class ClientController {
+
+    ClientService clientService;
+
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
+    }
+
+    @GetMapping("/crete")
+    public ResponseEntity<Client> create(@RequestBody Client client) {
+        return ResponseEntity.ok(clientService.create(client)) ;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Client>> findAll() {
+        return ResponseEntity.ok(clientService.findAll());
+    }
+
+    @GetMapping("/get/id/{id}")
+    public ResponseEntity<?> findById(@PathVariable String id) {
+        return ResponseEntity.ok(clientService.findById(id));
+    }
+
+    @GetMapping("/get/name/{name}")
+    public ResponseEntity<?> findByName(@PathVariable String name) {
+        return ResponseEntity.ok(clientService.findByName(name));
+    }
+
+    @GetMapping("/get/phone/{phone}")
+    public ResponseEntity<?> findByPhone(@PathVariable String phone) {
+        return ResponseEntity.ok(clientService.findByPhone(phone));
+
+    }
+
+    @GetMapping("/get/email/{email}")
+    public ResponseEntity<?> findByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(clientService.findByEmail(email));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> update(@PathVariable String id, @RequestBody Client updatedClient) {
+
+        Client client = clientService.update(id, updatedClient);
+
+        return ResponseEntity.ok(client);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable String id) {
+
+        clientService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

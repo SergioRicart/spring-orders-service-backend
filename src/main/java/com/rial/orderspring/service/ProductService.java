@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    Product save(Product product);
+    Product create(Product product);
 
     List<Product> findAll();
 
