@@ -1,27 +1,4 @@
-name: CI
-
-on:
-  pull_request:
-
 permissions:
-  checks: write
   contents: read
+  checks: write
   pull-requests: write
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.MY_PAT }}   # usar PAT si esperas forks
-
-      - name: Build and run tests
-        run: ./mvnw -B clean verify
-
-      - name: Generate test report
-        uses: dorny/test-reporter@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.MY_PAT }}
-        with:
-        # tus parámetros

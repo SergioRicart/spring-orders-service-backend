@@ -42,5 +42,5 @@ jobs:
 
       - name: Deploy (publish) to GitHub Packages
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ GITHUB_TOKEN }}
         run: ./mvnw -B deploy
