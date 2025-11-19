@@ -64,18 +64,20 @@ public class OrderController {
     };
 
     @GetMapping("/get/client/{clientId}")
-    public ResponseEntity<?> findByClientId(String clientId){
+    public ResponseEntity<?> findByClientId(@PathVariable String clientId){
 
         return ResponseEntity.ok(orderService.findByClientId(clientId));
     };
 
-    public ResponseEntity<Order> update(String id, Order updatedOrder){
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Order> update(@PathVariable String id, @RequestBody Order updatedOrder){
         Order order = orderService.update(id, updatedOrder);
 
         return ResponseEntity.ok(order);
     };
 
-    public ResponseEntity<?> deleteById(String id){
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable String id){
 
         orderService.deleteById(id);
 
