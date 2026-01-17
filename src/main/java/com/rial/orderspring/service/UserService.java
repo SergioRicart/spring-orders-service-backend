@@ -12,4 +12,6 @@ public interface UserService {
 
     void deleteById(String id);
 
+    User login(String email, String passwrod) throws Exception;
+
 }

@@ -50,4 +50,16 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(id);
     }
+
+    @Override
+    public User login(String email, String password) throws Exception {
+
+        User user = findByEmail(email);
+
+        if (user.getPassword().equals(encoder.encode(user.getPassword()))){
+            return user;
+        }else {
+            throw new Exception("PASS ERROR");
+        }
+    }
 }
