@@ -1,6 +1,7 @@
 package com.rial.orderspring.model;
 
 import com.rial.orderspring.constants.IBaseConstant;
+import com.rial.orderspring.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,5 +20,11 @@ public class User {
     private String email;
 
     private String password;
+
+    private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
 }
