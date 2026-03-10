@@ -1,26 +1,16 @@
 package com.rial.orderspring.service;
 
-import com.rial.orderspring.model.Client;
+import com.rial.orderspring.dto.ClientDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface ClientService {
-
-    Client create(Client client);
-
-    Page<Client> findAll(Pageable pageable);
-
-    Client findById(String id);
-
-    Client findByName(String name);
-
-    Client findByPhone(String phone);
-
-    Client findByEmail(String email);
-
-    Client update(String id, Client updatedClient);
-
+    ClientDTO create(ClientDTO clientDTO);
+    Page<ClientDTO> findAll(Pageable pageable);
+    ClientDTO findById(String id);
+    ClientDTO findByName(String name);
+    ClientDTO findByPhone(String phone);
+    ClientDTO findByEmail(String email);
+    ClientDTO update(String id, ClientDTO updatedClientDTO);
     void deleteById(String id);
 }

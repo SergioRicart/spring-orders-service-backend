@@ -5,10 +5,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
-@Getter @Setter
-@Table(schema = IBaseConstant.APP_SCHEMA, name = "users")
-public class User {
+@Getter
+@Setter
+@Table(schema = IBaseConstant.APP_SCHEMA, name = "roles")
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -16,16 +19,14 @@ public class User {
 
     private String name;
 
-    private String email;
-
-    private String password;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
-    private Role role;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    private List<User> users;
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    private List<Permission> permissions;
 
 }
