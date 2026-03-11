@@ -1,27 +1,27 @@
 package com.rial.orderspring.mapper;
 
-import com.rial.orderspring.dto.ClientDTO;
+import com.rial.orderspring.dto.ClientRequest;
+import com.rial.orderspring.dto.ClientResponse;
 import com.rial.orderspring.model.Client;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClientMapper {
 
-    public ClientDTO toDTO(Client client) {
-        ClientDTO dto = new ClientDTO();
-        dto.setId(client.getId());
-        dto.setName(client.getName());
-        dto.setPhone(client.getPhone());
-        dto.setEmail(client.getEmail());
-        return dto;
+    public ClientResponse toResponse(Client client) {
+        ClientResponse response = new ClientResponse();
+        response.setId(client.getId());
+        response.setName(client.getName());
+        response.setPhone(client.getPhone());
+        response.setEmail(client.getEmail());
+        return response;
     }
 
-    public Client toEntity(ClientDTO dto) {
+    public Client toEntity(ClientRequest request) {
         Client client = new Client();
-        client.setId(dto.getId());
-        client.setName(dto.getName());
-        client.setPhone(dto.getPhone());
-        client.setEmail(dto.getEmail());
+        client.setName(request.getName());
+        client.setPhone(request.getPhone());
+        client.setEmail(request.getEmail());
         return client;
     }
 }

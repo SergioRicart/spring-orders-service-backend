@@ -1,6 +1,7 @@
 package com.rial.orderspring.controller;
 
-import com.rial.orderspring.dto.UserDTO;
+import com.rial.orderspring.dto.UserRequest;
+import com.rial.orderspring.dto.UserResponse;
 import com.rial.orderspring.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +17,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
-        return ResponseEntity.ok(userService.create(userDTO));
+    public ResponseEntity<UserResponse> register(@RequestBody UserRequest request) {
+        return ResponseEntity.ok(userService.create(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestBody UserDTO loginDTO) throws Exception {
-        return ResponseEntity.ok(userService.login(loginDTO.getEmail(), loginDTO.getPassword()));
+    public ResponseEntity<UserResponse> login(@RequestBody UserRequest request) throws Exception {
+        return ResponseEntity.ok(userService.login(request.getEmail(), request.getPassword()));
     }
 }

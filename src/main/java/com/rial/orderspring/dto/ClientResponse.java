@@ -3,11 +3,9 @@ package com.rial.orderspring.dto;
 import lombok.Data;
 
 @Data
-public class UserDTO {
+public class ClientResponse {
     private String id;
     private String name;
+    private String phone;
     private String email;
-    private String password;
-    private String roleId;
-    private String companyId;
 }

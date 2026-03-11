@@ -1,6 +1,7 @@
 package com.rial.orderspring.service.impl;
 
-import com.rial.orderspring.dto.ClientDTO;
+import com.rial.orderspring.dto.ClientRequest;
+import com.rial.orderspring.dto.ClientResponse;
 import com.rial.orderspring.exception.ClientNotFoundException;
 import com.rial.orderspring.mapper.ClientMapper;
 import com.rial.orderspring.model.Client;
@@ -22,48 +23,47 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDTO create(ClientDTO clientDTO) {
-        Client client = clientMapper.toEntity(clientDTO);
-        return clientMapper.toDTO(clientRepository.save(client));
+    public ClientResponse create(ClientRequest request) {
+        return clientMapper.toResponse(clientRepository.save(clientMapper.toEntity(request)));
     }
 
     @Override
-    public Page<ClientDTO> findAll(Pageable pageable) {
-        return clientRepository.findAll(pageable).map(clientMapper::toDTO);
+    public Page<ClientResponse> findAll(Pageable pageable) {
+        return clientRepository.findAll(pageable).map(clientMapper::toResponse);
     }
 
     @Override
-    public ClientDTO findById(String id) {
-        return clientMapper.toDTO(clientRepository.findById(id)
+    public ClientResponse findById(String id) {
+        return clientMapper.toResponse(clientRepository.findById(id)
                 .orElseThrow(() -> new ClientNotFoundException(id)));
     }
 
     @Override
-    public ClientDTO findByName(String name) {
-        return clientMapper.toDTO(clientRepository.findByName(name)
+    public ClientResponse findByName(String name) {
+        return clientMapper.toResponse(clientRepository.findByName(name)
                 .orElseThrow(() -> new ClientNotFoundException(name)));
     }
 
     @Override
-    public ClientDTO findByPhone(String phone) {
-        return clientMapper.toDTO(clientRepository.findByPhone(phone)
+    public ClientResponse findByPhone(String phone) {
+        return clientMapper.toResponse(clientRepository.findByPhone(phone)
                 .orElseThrow(() -> new ClientNotFoundException(phone)));
     }
 
     @Override
-    public ClientDTO findByEmail(String email) {
-        return clientMapper.toDTO(clientRepository.findByEmail(email)
+    public ClientResponse findByEmail(String email) {
+        return clientMapper.toResponse(clientRepository.findByEmail(email)
                 .orElseThrow(() -> new ClientNotFoundException(email)));
     }
 
     @Override
-    public ClientDTO update(String id, ClientDTO updatedClientDTO) {
+    public ClientResponse update(String id, ClientRequest request) {
         Client actual = clientRepository.findById(id)
                 .orElseThrow(() -> new ClientNotFoundException(id));
-        actual.setName(updatedClientDTO.getName());
-        actual.setPhone(updatedClientDTO.getPhone());
-        actual.setEmail(updatedClientDTO.getEmail());
-        return clientMapper.toDTO(clientRepository.save(actual));
+        actual.setName(request.getName());
+        actual.setPhone(request.getPhone());
+        actual.setEmail(request.getEmail());
+        return clientMapper.toResponse(clientRepository.save(actual));
     }
 
     @Override

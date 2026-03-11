@@ -1,6 +1,7 @@
 package com.rial.orderspring.service.impl;
 
-import com.rial.orderspring.dto.OrderDTO;
+import com.rial.orderspring.dto.OrderRequest;
+import com.rial.orderspring.dto.OrderResponse;
 import com.rial.orderspring.enums.OrderState;
 import com.rial.orderspring.exception.OrderNotFoundException;
 import com.rial.orderspring.mapper.OrderMapper;
@@ -26,59 +27,58 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO create(OrderDTO orderDTO) {
-        Order order = orderMapper.toEntity(orderDTO);
-        return orderMapper.toDTO(orderRepository.save(order));
+    public OrderResponse create(OrderRequest request) {
+        return orderMapper.toResponse(orderRepository.save(orderMapper.toEntity(request)));
     }
 
     @Override
-    public Page<OrderDTO> findAll(Pageable pageable) {
-        return orderRepository.findAll(pageable).map(orderMapper::toDTO);
+    public Page<OrderResponse> findAll(Pageable pageable) {
+        return orderRepository.findAll(pageable).map(orderMapper::toResponse);
     }
 
     @Override
-    public OrderDTO findById(String id) {
-        return orderMapper.toDTO(orderRepository.findById(id)
+    public OrderResponse findById(String id) {
+        return orderMapper.toResponse(orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException(id)));
     }
 
     @Override
-    public List<OrderDTO> findByOrderDateTime(LocalDateTime orderDateTime) {
+    public List<OrderResponse> findByOrderDateTime(LocalDateTime orderDateTime) {
         return orderRepository.findByOrderDateTime(orderDateTime)
                 .orElseThrow(() -> new OrderNotFoundException(orderDateTime))
-                .stream().map(orderMapper::toDTO).toList();
+                .stream().map(orderMapper::toResponse).toList();
     }
 
     @Override
-    public List<OrderDTO> findByDeliveryDateTime(LocalDateTime deliveryDateTime) {
+    public List<OrderResponse> findByDeliveryDateTime(LocalDateTime deliveryDateTime) {
         return orderRepository.findByDeliveryDateTime(deliveryDateTime)
                 .orElseThrow(() -> new OrderNotFoundException(deliveryDateTime))
-                .stream().map(orderMapper::toDTO).toList();
+                .stream().map(orderMapper::toResponse).toList();
     }
 
     @Override
-    public List<OrderDTO> findByOrderState(OrderState orderState) {
+    public List<OrderResponse> findByOrderState(OrderState orderState) {
         return orderRepository.findByOrderState(orderState)
                 .orElseThrow(() -> new OrderNotFoundException(orderState.name()))
-                .stream().map(orderMapper::toDTO).toList();
+                .stream().map(orderMapper::toResponse).toList();
     }
 
     @Override
-    public List<OrderDTO> findByClientId(String clientId) {
+    public List<OrderResponse> findByClientId(String clientId) {
         return orderRepository.findByClientId(clientId)
                 .orElseThrow(() -> new OrderNotFoundException(clientId))
-                .stream().map(orderMapper::toDTO).toList();
+                .stream().map(orderMapper::toResponse).toList();
     }
 
     @Override
-    public OrderDTO update(String id, OrderDTO updatedOrderDTO) {
+    public OrderResponse update(String id, OrderRequest request) {
         Order actual = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException(id));
-        actual.setOrderDateTime(updatedOrderDTO.getOrderDateTime());
-        actual.setDeliveryDateTime(updatedOrderDTO.getDeliveryDateTime());
-        actual.setPaymentState(updatedOrderDTO.getPaymentState());
-        actual.setOrderState(updatedOrderDTO.getOrderState());
-        return orderMapper.toDTO(orderRepository.save(actual));
+        actual.setOrderDateTime(request.getOrderDateTime());
+        actual.setDeliveryDateTime(request.getDeliveryDateTime());
+        actual.setPaymentState(request.getPaymentState());
+        actual.setOrderState(request.getOrderState());
+        return orderMapper.toResponse(orderRepository.save(actual));
     }
 
     @Override

@@ -8,12 +8,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class OrderDTO {
+public class OrderResponse {
     private String id;
     private LocalDateTime orderDateTime;
     private LocalDateTime deliveryDateTime;
     private PaymentState paymentState;
     private OrderState orderState;
     private String clientId;
-    private List<OrderProductDTO> orderProducts;
+    private List<OrderProductResponse> orderProducts;
 }

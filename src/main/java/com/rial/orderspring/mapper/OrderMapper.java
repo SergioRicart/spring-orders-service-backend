@@ -1,7 +1,9 @@
 package com.rial.orderspring.mapper;
 
-import com.rial.orderspring.dto.OrderDTO;
-import com.rial.orderspring.dto.OrderProductDTO;
+import com.rial.orderspring.dto.OrderProductRequest;
+import com.rial.orderspring.dto.OrderProductResponse;
+import com.rial.orderspring.dto.OrderRequest;
+import com.rial.orderspring.dto.OrderResponse;
 import com.rial.orderspring.exception.ClientNotFoundException;
 import com.rial.orderspring.exception.ProductNotFoundException;
 import com.rial.orderspring.model.Order;
@@ -25,55 +27,53 @@ public class OrderMapper {
         this.productRepository = productRepository;
     }
 
-    public OrderDTO toDTO(Order order) {
-        OrderDTO dto = new OrderDTO();
-        dto.setId(order.getId());
-        dto.setOrderDateTime(order.getOrderDateTime());
-        dto.setDeliveryDateTime(order.getDeliveryDateTime());
-        dto.setPaymentState(order.getPaymentState());
-        dto.setOrderState(order.getOrderState());
-        dto.setClientId(order.getClient() != null ? order.getClient().getId() : null);
+    public OrderResponse toResponse(Order order) {
+        OrderResponse response = new OrderResponse();
+        response.setId(order.getId());
+        response.setOrderDateTime(order.getOrderDateTime());
+        response.setDeliveryDateTime(order.getDeliveryDateTime());
+        response.setPaymentState(order.getPaymentState());
+        response.setOrderState(order.getOrderState());
+        response.setClientId(order.getClient() != null ? order.getClient().getId() : null);
 
         if (order.getOrderProducts() != null) {
-            List<OrderProductDTO> products = order.getOrderProducts().stream()
+            List<OrderProductResponse> products = order.getOrderProducts().stream()
                     .map(op -> {
-                        OrderProductDTO opDto = new OrderProductDTO();
-                        opDto.setId(op.getId());
-                        opDto.setProductId(op.getProduct() != null ? op.getProduct().getId() : null);
-                        opDto.setQuantity(op.getQuantity());
-                        return opDto;
+                        OrderProductResponse opResponse = new OrderProductResponse();
+                        opResponse.setId(op.getId());
+                        opResponse.setProductId(op.getProduct() != null ? op.getProduct().getId() : null);
+                        opResponse.setQuantity(op.getQuantity());
+                        return opResponse;
                     }).toList();
-            dto.setOrderProducts(products);
+            response.setOrderProducts(products);
         } else {
-            dto.setOrderProducts(Collections.emptyList());
+            response.setOrderProducts(Collections.emptyList());
         }
 
-        return dto;
+        return response;
     }
 
-    public Order toEntity(OrderDTO dto) {
+    public Order toEntity(OrderRequest request) {
         Order order = new Order();
-        order.setId(dto.getId());
-        order.setOrderDateTime(dto.getOrderDateTime());
-        order.setDeliveryDateTime(dto.getDeliveryDateTime());
-        order.setPaymentState(dto.getPaymentState());
-        order.setOrderState(dto.getOrderState());
+        order.setOrderDateTime(request.getOrderDateTime());
+        order.setDeliveryDateTime(request.getDeliveryDateTime());
+        order.setPaymentState(request.getPaymentState());
+        order.setOrderState(request.getOrderState());
 
-        if (dto.getClientId() != null) {
-            order.setClient(clientRepository.findById(dto.getClientId())
-                    .orElseThrow(() -> new ClientNotFoundException(dto.getClientId())));
+        if (request.getClientId() != null) {
+            order.setClient(clientRepository.findById(request.getClientId())
+                    .orElseThrow(() -> new ClientNotFoundException(request.getClientId())));
         }
 
-        if (dto.getOrderProducts() != null) {
-            List<OrderProduct> orderProducts = dto.getOrderProducts().stream()
-                    .map(opDto -> {
+        if (request.getOrderProducts() != null) {
+            List<OrderProduct> orderProducts = request.getOrderProducts().stream()
+                    .map(opRequest -> {
                         OrderProduct op = new OrderProduct();
-                        op.setId(opDto.getId());
-                        op.setQuantity(opDto.getQuantity());
+                        op.setQuantity(opRequest.getQuantity());
                         op.setOrder(order);
-                        if (opDto.getProductId() != null) {
-                            Product product = productRepository.findById(opDto.getProductId())
-                                    .orElseThrow(() -> new ProductNotFoundException(opDto.getProductId()));
+                        if (opRequest.getProductId() != null) {
+                            Product product = productRepository.findById(opRequest.getProductId())
+                                    .orElseThrow(() -> new ProductNotFoundException(opRequest.getProductId()));
                             op.setProduct(product);
                         }
                         return op;

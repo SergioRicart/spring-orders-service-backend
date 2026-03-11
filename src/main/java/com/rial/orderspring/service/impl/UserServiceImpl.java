@@ -1,6 +1,7 @@
 package com.rial.orderspring.service.impl;
 
-import com.rial.orderspring.dto.UserDTO;
+import com.rial.orderspring.dto.UserRequest;
+import com.rial.orderspring.dto.UserResponse;
 import com.rial.orderspring.exception.UserNotFoundException;
 import com.rial.orderspring.mapper.UserMapper;
 import com.rial.orderspring.model.Company;
@@ -19,7 +20,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
     private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository, CompanyRepository companyRepository, PasswordEncoder encoder, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, CompanyRepository companyRepository,
+                           PasswordEncoder encoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
         this.encoder = encoder;
@@ -27,25 +29,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO create(UserDTO userDTO) {
-
-        User user = userMapper.toEntity(userDTO);
-        user.setPassword(encoder.encode(userDTO.getPassword()));
+    public UserResponse create(UserRequest request) {
+        User user = userMapper.toEntity(request);
+        user.setPassword(encoder.encode(request.getPassword()));
 
         Company company;
-        if (userDTO.getCompanyId() == null || userDTO.getCompanyId().isBlank()){
-
+        if (request.getCompanyId() == null || request.getCompanyId().isBlank()) {
             company = createDefaultCompany();
-
-        }else{
-
-            company = companyRepository.findById(userDTO.getCompanyId()).orElseGet(this::createDefaultCompany);
-
+        } else {
+            company = companyRepository.findById(request.getCompanyId()).orElseGet(this::createDefaultCompany);
         }
-
         user.setCompany(company);
 
-        return userMapper.toDTO(userRepository.save(user));
+        return userMapper.toResponse(userRepository.save(user));
     }
 
     private Company createDefaultCompany() {
@@ -56,14 +52,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findById(String id) {
-        return userMapper.toDTO(userRepository.findById(id)
+    public UserResponse findById(String id) {
+        return userMapper.toResponse(userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id)));
     }
 
     @Override
-    public UserDTO findByEmail(String email) {
-        return userMapper.toDTO(userRepository.findByEmail(email)
+    public UserResponse findByEmail(String email) {
+        return userMapper.toResponse(userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email)));
     }
 
@@ -76,11 +72,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO login(String email, String password) throws Exception {
+    public UserResponse login(String email, String password) throws Exception {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email));
         if (encoder.matches(password, user.getPassword())) {
-            return userMapper.toDTO(user);
+            return userMapper.toResponse(user);
         } else {
             throw new Exception("PASS ERROR");
         }

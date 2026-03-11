@@ -3,8 +3,7 @@ package com.rial.orderspring.dto;
 import lombok.Data;
 
 @Data
-public class OrderProductDTO {
-    private String id;
+public class OrderProductRequest {
     private String productId;
     private int quantity;
 }

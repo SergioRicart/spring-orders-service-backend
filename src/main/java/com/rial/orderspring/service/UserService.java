@@ -1,11 +1,12 @@
 package com.rial.orderspring.service;
 
-import com.rial.orderspring.dto.UserDTO;
+import com.rial.orderspring.dto.UserRequest;
+import com.rial.orderspring.dto.UserResponse;
 
 public interface UserService {
-    UserDTO create(UserDTO userDTO);
-    UserDTO findById(String id);
-    UserDTO findByEmail(String email);
+    UserResponse create(UserRequest request);
+    UserResponse findById(String id);
+    UserResponse findByEmail(String email);
     void deleteById(String id);
-    UserDTO login(String email, String password) throws Exception;
+    UserResponse login(String email, String password) throws Exception;
 }

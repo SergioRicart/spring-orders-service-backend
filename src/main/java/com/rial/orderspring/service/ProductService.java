@@ -1,6 +1,7 @@
 package com.rial.orderspring.service;
 
-import com.rial.orderspring.dto.ProductDTO;
+import com.rial.orderspring.dto.ProductRequest;
+import com.rial.orderspring.dto.ProductResponse;
 import com.rial.orderspring.enums.ProductState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,11 +9,11 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ProductService {
-    ProductDTO create(ProductDTO productDTO);
-    Page<ProductDTO> findAll(Pageable pageable);
-    List<ProductDTO> findByProductState(ProductState productState);
-    ProductDTO findById(String id);
-    ProductDTO findByName(String name);
-    ProductDTO update(String id, ProductDTO updatedProductDTO);
+    ProductResponse create(ProductRequest request);
+    Page<ProductResponse> findAll(Pageable pageable);
+    List<ProductResponse> findByProductState(ProductState productState);
+    ProductResponse findById(String id);
+    ProductResponse findByName(String name);
+    ProductResponse update(String id, ProductRequest request);
     void deleteById(String id);
 }

@@ -1,6 +1,5 @@
 package com.rial.orderspring.repository;
 
-import com.rial.orderspring.dto.UserDTO;
 import com.rial.orderspring.model.Company;
 import com.rial.orderspring.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,29 +1,28 @@
 package com.rial.orderspring.mapper;
 
-import com.rial.orderspring.dto.UserDTO;
+import com.rial.orderspring.dto.UserRequest;
+import com.rial.orderspring.dto.UserResponse;
 import com.rial.orderspring.model.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
 
-    public UserDTO toDTO(User user) {
-        UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setRoleId(user.getRole() != null ? user.getRole().getId() : null);
-        dto.setCompanyId(user.getCompany() != null ? user.getCompany().getId() : null);
-        // password NO se expone en respuesta
-        return dto;
+    public UserResponse toResponse(User user) {
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+        response.setRoleId(user.getRole() != null ? user.getRole().getId() : null);
+        response.setCompanyId(user.getCompany() != null ? user.getCompany().getId() : null);
+        return response;
     }
 
-    public User toEntity(UserDTO dto) {
+    public User toEntity(UserRequest request) {
         User user = new User();
-        user.setId(dto.getId());
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
         return user;
     }
 }

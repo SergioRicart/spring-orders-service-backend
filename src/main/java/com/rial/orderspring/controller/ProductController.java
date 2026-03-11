@@ -1,6 +1,7 @@
 package com.rial.orderspring.controller;
 
-import com.rial.orderspring.dto.ProductDTO;
+import com.rial.orderspring.dto.ProductRequest;
+import com.rial.orderspring.dto.ProductResponse;
 import com.rial.orderspring.enums.ProductState;
 import com.rial.orderspring.service.ProductService;
 import org.springframework.data.domain.Page;
@@ -22,12 +23,12 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ProductDTO> create(@RequestBody ProductDTO productDTO) {
-        return ResponseEntity.ok(productService.create(productDTO));
+    public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest request) {
+        return ResponseEntity.ok(productService.create(request));
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductDTO>> findAll(
+    public ResponseEntity<Page<ProductResponse>> findAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -35,23 +36,23 @@ public class ProductController {
     }
 
     @GetMapping("/get/id/{id}")
-    public ResponseEntity<ProductDTO> findById(@PathVariable String id) {
+    public ResponseEntity<ProductResponse> findById(@PathVariable String id) {
         return ResponseEntity.ok(productService.findById(id));
     }
 
     @GetMapping("/get/name/{name}")
-    public ResponseEntity<ProductDTO> findByName(@PathVariable String name) {
+    public ResponseEntity<ProductResponse> findByName(@PathVariable String name) {
         return ResponseEntity.ok(productService.findByName(name));
     }
 
     @GetMapping("/get/state/{state}")
-    public ResponseEntity<List<ProductDTO>> findByProductState(@PathVariable ProductState state) {
+    public ResponseEntity<List<ProductResponse>> findByProductState(@PathVariable ProductState state) {
         return ResponseEntity.ok(productService.findByProductState(state));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable String id, @RequestBody ProductDTO updatedProductDTO) {
-        return ResponseEntity.ok(productService.update(id, updatedProductDTO));
+    public ResponseEntity<ProductResponse> update(@PathVariable String id, @RequestBody ProductRequest request) {
+        return ResponseEntity.ok(productService.update(id, request));
     }
 
     @DeleteMapping("/delete/{id}")

@@ -4,7 +4,7 @@ import com.rial.orderspring.enums.ProductState;
 import lombok.Data;
 
 @Data
-public class ProductDTO {
+public class ProductResponse {
     private String id;
     private String name;
     private String description;
