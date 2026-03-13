@@ -1,7 +1,7 @@
 package com.rial.orderspring.service.impl;
 
-import com.rial.orderspring.dto.ClientRequest;
-import com.rial.orderspring.dto.ClientResponse;
+import com.rial.orderspring.dto.request.ClientRequest;
+import com.rial.orderspring.dto.response.ClientResponse;
 import com.rial.orderspring.exception.ClientNotFoundException;
 import com.rial.orderspring.mapper.ClientMapper;
 import com.rial.orderspring.model.Client;

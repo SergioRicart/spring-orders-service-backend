@@ -1,20 +1,21 @@
 package com.rial.orderspring.service;
 
-import com.rial.orderspring.dto.CompanyDTO;
+import com.rial.orderspring.dto.request.CompanyRequest;
+import com.rial.orderspring.dto.response.CompanyResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CompanyService {
 
-    CompanyDTO create(CompanyDTO companyDTO);
+    CompanyResponse create(CompanyRequest companyRequest);
 
-    Page<CompanyDTO> findAll(Pageable pageable);
+    Page<CompanyResponse> findAll(Pageable pageable);
 
-    CompanyDTO findById(String id);
+    CompanyResponse findById(String id);
 
-    CompanyDTO findByName(String name);
+    CompanyResponse findByName(String name);
 
-    CompanyDTO update(String id, CompanyDTO updatedCompanyDTO);
+    CompanyResponse update(String id, CompanyRequest updatedCompanyRequest);
 
     void deleteById(String id);
 

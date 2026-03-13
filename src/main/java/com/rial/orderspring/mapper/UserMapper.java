@@ -1,7 +1,7 @@
 package com.rial.orderspring.mapper;
 
-import com.rial.orderspring.dto.UserRequest;
-import com.rial.orderspring.dto.UserResponse;
+import com.rial.orderspring.dto.request.UserRequest;
+import com.rial.orderspring.dto.response.UserResponse;
 import com.rial.orderspring.model.User;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,7 @@
 package com.rial.orderspring.service.impl;
 
-import com.rial.orderspring.dto.CompanyDTO;
+import com.rial.orderspring.dto.request.CompanyRequest;
+import com.rial.orderspring.dto.response.CompanyResponse;
 import com.rial.orderspring.mapper.CompanyMapper;
 import com.rial.orderspring.model.Company;
 import com.rial.orderspring.repository.CompanyRepository;
@@ -19,30 +20,30 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyDTO create(CompanyDTO companyDTO) {
+    public CompanyResponse create(CompanyRequest companyRequest) {
 
-        Company company = companyMapper.toEntity(companyDTO);
+        Company company = companyMapper.toEntity(companyRequest);
 
-        return companyDTO;
+        return companyMapper.toDTO(company);
     }
 
     @Override
-    public Page<CompanyDTO> findAll(Pageable pageable) {
+    public Page<CompanyResponse> findAll(Pageable pageable) {
         return null;
     }
 
     @Override
-    public CompanyDTO findById(String id) {
+    public CompanyResponse findById(String id) {
         return null;
     }
 
     @Override
-    public CompanyDTO findByName(String name) {
+    public CompanyResponse findByName(String name) {
         return null;
     }
 
     @Override
-    public CompanyDTO update(String id, CompanyDTO updatedCompanyDTO) {
+    public CompanyResponse update(String id, CompanyRequest updatedCompanyRequest) {
         return null;
     }
 

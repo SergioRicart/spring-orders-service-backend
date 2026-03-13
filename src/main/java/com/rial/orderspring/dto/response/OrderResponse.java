@@ -1,4 +1,4 @@
-package com.rial.orderspring.dto;
+package com.rial.orderspring.dto.response;
 
 import com.rial.orderspring.enums.OrderState;
 import com.rial.orderspring.enums.PaymentState;

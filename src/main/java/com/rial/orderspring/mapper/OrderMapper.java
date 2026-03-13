@@ -1,9 +1,8 @@
 package com.rial.orderspring.mapper;
 
-import com.rial.orderspring.dto.OrderProductRequest;
-import com.rial.orderspring.dto.OrderProductResponse;
-import com.rial.orderspring.dto.OrderRequest;
-import com.rial.orderspring.dto.OrderResponse;
+import com.rial.orderspring.dto.response.OrderProductResponse;
+import com.rial.orderspring.dto.request.OrderRequest;
+import com.rial.orderspring.dto.response.OrderResponse;
 import com.rial.orderspring.exception.ClientNotFoundException;
 import com.rial.orderspring.exception.ProductNotFoundException;
 import com.rial.orderspring.model.Order;

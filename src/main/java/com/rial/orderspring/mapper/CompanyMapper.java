@@ -1,12 +1,13 @@
 package com.rial.orderspring.mapper;
 
-import com.rial.orderspring.dto.CompanyDTO;
+import com.rial.orderspring.dto.request.CompanyRequest;
+import com.rial.orderspring.dto.response.CompanyResponse;
 import com.rial.orderspring.model.Company;
 
 public class CompanyMapper {
 
-    public CompanyDTO toDTO(Company company) {
-        CompanyDTO dto = new CompanyDTO();
+    public CompanyResponse toDTO(Company company) {
+        CompanyResponse dto = new CompanyResponse();
         dto.setId(company.getId());
         dto.setName(company.getName());
         dto.setDescription(company.getDescription());
@@ -15,12 +16,10 @@ public class CompanyMapper {
         return dto;
     }
 
-    public Company toEntity(CompanyDTO dto) {
+    public Company toEntity(CompanyRequest request) {
         Company company = new Company();
-        company.setId(dto.getId());
-        company.setName(dto.getName());
-        company.setDescription(dto.getDescription());
-        company.setUsers(dto.getUsers());
+        company.setName(request.getName());
+        company.setDescription(request.getDescription());
         return company;
     }
 }

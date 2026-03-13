@@ -1,7 +1,7 @@
 package com.rial.orderspring.controller;
 
-import com.rial.orderspring.dto.OrderRequest;
-import com.rial.orderspring.dto.OrderResponse;
+import com.rial.orderspring.dto.request.OrderRequest;
+import com.rial.orderspring.dto.response.OrderResponse;
 import com.rial.orderspring.enums.OrderState;
 import com.rial.orderspring.service.OrderService;
 import org.springframework.data.domain.Page;

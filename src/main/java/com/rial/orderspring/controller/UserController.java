@@ -1,7 +1,7 @@
 package com.rial.orderspring.controller;
 
-import com.rial.orderspring.dto.UserRequest;
-import com.rial.orderspring.dto.UserResponse;
+import com.rial.orderspring.dto.request.UserRequest;
+import com.rial.orderspring.dto.response.UserResponse;
 import com.rial.orderspring.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

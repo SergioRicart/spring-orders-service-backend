@@ -1,7 +1,7 @@
 package com.rial.orderspring.service.impl;
 
-import com.rial.orderspring.dto.OrderRequest;
-import com.rial.orderspring.dto.OrderResponse;
+import com.rial.orderspring.dto.request.OrderRequest;
+import com.rial.orderspring.dto.response.OrderResponse;
 import com.rial.orderspring.enums.OrderState;
 import com.rial.orderspring.exception.OrderNotFoundException;
 import com.rial.orderspring.mapper.OrderMapper;

@@ -1,7 +1,7 @@
 package com.rial.orderspring.service;
 
-import com.rial.orderspring.dto.ProductRequest;
-import com.rial.orderspring.dto.ProductResponse;
+import com.rial.orderspring.dto.request.ProductRequest;
+import com.rial.orderspring.dto.response.ProductResponse;
 import com.rial.orderspring.enums.ProductState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

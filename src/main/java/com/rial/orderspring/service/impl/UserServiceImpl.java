@@ -1,7 +1,7 @@
 package com.rial.orderspring.service.impl;
 
-import com.rial.orderspring.dto.UserRequest;
-import com.rial.orderspring.dto.UserResponse;
+import com.rial.orderspring.dto.request.UserRequest;
+import com.rial.orderspring.dto.response.UserResponse;
 import com.rial.orderspring.exception.UserNotFoundException;
 import com.rial.orderspring.mapper.UserMapper;
 import com.rial.orderspring.model.Company;

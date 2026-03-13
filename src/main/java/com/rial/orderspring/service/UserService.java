@@ -1,7 +1,7 @@
 package com.rial.orderspring.service;
 
-import com.rial.orderspring.dto.UserRequest;
-import com.rial.orderspring.dto.UserResponse;
+import com.rial.orderspring.dto.request.UserRequest;
+import com.rial.orderspring.dto.response.UserResponse;
 
 public interface UserService {
     UserResponse create(UserRequest request);
