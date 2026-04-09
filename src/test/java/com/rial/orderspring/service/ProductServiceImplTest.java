@@ -1,8 +1,9 @@
 package com.rial.orderspring.service;
 
+import com.rial.orderspring.dto.request.ProductRequest;
+import com.rial.orderspring.dto.response.ProductResponse;
 import com.rial.orderspring.enums.ProductState;
 import com.rial.orderspring.exception.ProductNotFoundException;
-import com.rial.orderspring.model.Product;
 import com.rial.orderspring.repository.ProductRepository;
 import com.rial.orderspring.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,37 +34,44 @@ class ProductServiceImplTest {
     @InjectMocks
     private ProductServiceImpl productService;
 
-    private Product product;
+    private ProductResponse productResponse;
+    private ProductRequest productRequest;
 
     @BeforeEach
     void setUp() {
-        product = new Product();
-        product.setId("1");
-        product.setName("Test Product");
-        product.setDescription("Test Description");
-        product.setPrice(99.99);
-        product.setProductState(ProductState.ACTIVE);
+        productRequest = new ProductRequest();
+        productRequest.setName("Test Product");
+        productRequest.setDescription("Test Description");
+        productRequest.setPrice(99.99);
+        productRequest.setProductState(ProductState.ACTIVE);
+
+        productResponse = new ProductResponse();
+        productResponse.setId("1");
+        productResponse.setName("Test Product");
+        productResponse.setDescription("Test Description");
+        productResponse.setPrice(99.99);
+        productResponse.setProductState(ProductState.ACTIVE);
     }
 
     @Test
     void create_ShouldReturnSavedProduct() {
-        when(productRepository.save(any(Product.class))).thenReturn(product);
+        when(productRepository.save(any(ProductRequest.class))).thenReturn(productResponse);
 
-        Product result = productService.create(product);
+        ProductResponse result = productService.create(productRequest);
 
         assertNotNull(result);
         assertEquals("Test Product", result.getName());
         assertEquals(99.99, result.getPrice());
-        verify(productRepository, times(1)).save(product);
+        verify(productRepository, times(1)).save(any(ProductRequest.class));
     }
 
     @Test
     void findAll_ShouldReturnPageOfProducts() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Product> page = new PageImpl<>(Arrays.asList(product));
+        Page<ProductResponse> page = new PageImpl<>(Arrays.asList(productResponse));
         when(productRepository.findAll(pageable)).thenReturn(page);
 
-        Page<Product> result = productService.findAll(pageable);
+        Page<ProductResponse> result = productService.findAll(pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
@@ -72,9 +80,9 @@ class ProductServiceImplTest {
 
     @Test
     void findById_WhenProductExists_ShouldReturnProduct() {
-        when(productRepository.findById("1")).thenReturn(Optional.of(product));
+        when(productRepository.findById("1")).thenReturn(Optional.of(productResponse));
 
-        Product result = productService.findById("1");
+        ProductResponse result = productService.findById("1");
 
         assertNotNull(result);
         assertEquals("1", result.getId());
@@ -92,9 +100,9 @@ class ProductServiceImplTest {
 
     @Test
     void findByName_WhenProductExists_ShouldReturnProduct() {
-        when(productRepository.findByName("Test Product")).thenReturn(Optional.of(product));
+        when(productRepository.findByName("Test Product")).thenReturn(Optional.of(productResponse));
 
-        Product result = productService.findByName("Test Product");
+        ProductResponse result = productService.findByName("Test Product");
 
         assertNotNull(result);
         assertEquals("Test Product", result.getName());
@@ -111,11 +119,11 @@ class ProductServiceImplTest {
 
     @Test
     void findByProductState_ShouldReturnListOfProducts() {
-        List<Product> products = Arrays.asList(product);
+        List<ProductResponse> products = Arrays.asList(productResponse);
         when(productRepository.findByProductState(ProductState.ACTIVE))
                 .thenReturn(Optional.of(products));
 
-        List<Product> result = productService.findByProductState(ProductState.ACTIVE);
+        List<ProductResponse> result = productService.findByProductState(ProductState.ACTIVE);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -124,28 +132,28 @@ class ProductServiceImplTest {
 
     @Test
     void update_ShouldReturnUpdatedProduct() {
-        Product updatedProduct = new Product();
-        updatedProduct.setName("Updated Product");
-        updatedProduct.setPrice(149.99);
-        updatedProduct.setProductState(ProductState.INACTIVE);
+        ProductRequest updatedRequest = new ProductRequest();
+        updatedRequest.setName("Updated Product");
+        updatedRequest.setPrice(149.99);
+        updatedRequest.setProductState(ProductState.INACTIVE);
 
-        when(productRepository.findById("1")).thenReturn(Optional.of(product));
-        when(productRepository.save(any(Product.class))).thenReturn(product);
+        when(productRepository.findById("1")).thenReturn(Optional.of(productResponse));
+        when(productRepository.save(any(ProductRequest.class))).thenReturn(productResponse);
 
-        Product result = productService.update("1", updatedProduct);
+        ProductResponse result = productService.update("1", updatedRequest);
 
         assertNotNull(result);
-        verify(productRepository, times(1)).save(any(Product.class));
+        verify(productRepository, times(1)).save(any(ProductRequest.class));
     }
 
     @Test
     void deleteById_WhenProductExists_ShouldDeleteProduct() {
-        when(productRepository.findById("1")).thenReturn(Optional.of(product));
-        doNothing().when(productRepository).delete(product);
+        when(productRepository.findById("1")).thenReturn(Optional.of(productResponse));
+        doNothing().when(productRepository).delete(any(ProductResponse.class));
 
         productService.deleteById("1");
 
-        verify(productRepository, times(1)).delete(product);
+        verify(productRepository, times(1)).delete(any(ProductResponse.class));
     }
 
     @Test

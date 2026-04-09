@@ -1,77 +1,75 @@
 package com.rial.orderspring.service.impl;
 
+import com.rial.orderspring.dto.request.ClientRequest;
+import com.rial.orderspring.dto.response.ClientResponse;
 import com.rial.orderspring.exception.ClientNotFoundException;
+import com.rial.orderspring.mapper.ClientMapper;
 import com.rial.orderspring.model.Client;
 import com.rial.orderspring.repository.ClientRepository;
 import com.rial.orderspring.service.ClientService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
-    public ClientServiceImpl(ClientRepository clientRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper) {
         this.clientRepository = clientRepository;
+        this.clientMapper = clientMapper;
     }
 
     @Override
-    public Client create(Client client) {
-        return clientRepository.save(client);
+    public ClientResponse create(ClientRequest request) {
+        return clientMapper.toResponse(clientRepository.save(clientMapper.toEntity(request)));
     }
 
     @Override
-    public Page<Client> findAll(Pageable pageable) {
-        return clientRepository.findAll(pageable);
+    public Page<ClientResponse> findAll(Pageable pageable) {
+        return clientRepository.findAll(pageable).map(clientMapper::toResponse);
     }
 
     @Override
-    public Client findById(String id) {
-        return clientRepository.findById(id).orElseThrow(
-                () -> new ClientNotFoundException(id)
-        );
+    public ClientResponse findById(String id) {
+        return clientMapper.toResponse(clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(id)));
     }
 
     @Override
-    public Client findByName(String name) {
-        return clientRepository.findByName(name).orElseThrow(
-                () -> new ClientNotFoundException(name)
-        );
+    public ClientResponse findByName(String name) {
+        return clientMapper.toResponse(clientRepository.findByName(name)
+                .orElseThrow(() -> new ClientNotFoundException(name)));
     }
 
     @Override
-    public Client findByPhone(String phone) {
-        return clientRepository.findByPhone(phone).orElseThrow(
-                () -> new ClientNotFoundException(phone)
-        );
+    public ClientResponse findByPhone(String phone) {
+        return clientMapper.toResponse(clientRepository.findByPhone(phone)
+                .orElseThrow(() -> new ClientNotFoundException(phone)));
     }
 
     @Override
-    public Client findByEmail(String email) {
-        return clientRepository.findByEmail(email).orElseThrow(
-                () -> new ClientNotFoundException(email)
-        );
+    public ClientResponse findByEmail(String email) {
+        return clientMapper.toResponse(clientRepository.findByEmail(email)
+                .orElseThrow(() -> new ClientNotFoundException(email)));
     }
 
     @Override
-    public Client update(String id, Client updatedClient) {
-        Client actualClient = findById(id);
-
-        BeanUtils.copyProperties(updatedClient, actualClient, "id");
-
-        return clientRepository.save(actualClient);
+    public ClientResponse update(String id, ClientRequest request) {
+        Client actual = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(id));
+        actual.setName(request.getName());
+        actual.setPhone(request.getPhone());
+        actual.setEmail(request.getEmail());
+        return clientMapper.toResponse(clientRepository.save(actual));
     }
 
     @Override
     public void deleteById(String id) {
-
-        Client client = findById(id);
-
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(id));
         clientRepository.delete(client);
     }
 }

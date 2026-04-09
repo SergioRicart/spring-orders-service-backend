@@ -1,9 +1,10 @@
 package com.rial.orderspring.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rial.orderspring.dto.request.ProductRequest;
+import com.rial.orderspring.dto.response.ProductResponse;
 import com.rial.orderspring.enums.ProductState;
 import com.rial.orderspring.exception.ProductNotFoundException;
-import com.rial.orderspring.model.Product;
 import com.rial.orderspring.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,36 +37,43 @@ class ProductControllerTest {
     @MockitoBean
     private ProductService productService;
 
-    private Product product;
+    private ProductResponse productResponse;
+    private ProductRequest productRequest;
 
     @BeforeEach
     void setUp() {
-        product = new Product();
-        product.setId("1");
-        product.setName("Test Product");
-        product.setDescription("Test Description");
-        product.setPrice(99.99);
-        product.setProductState(ProductState.ACTIVE);
+        productRequest = new ProductRequest();
+        productRequest.setName("Test Product");
+        productRequest.setDescription("Test Description");
+        productRequest.setPrice(99.99);
+        productRequest.setProductState(ProductState.ACTIVE);
+
+        productResponse = new ProductResponse();
+        productResponse.setId("1");
+        productResponse.setName("Test Product");
+        productResponse.setDescription("Test Description");
+        productResponse.setPrice(99.99);
+        productResponse.setProductState(ProductState.ACTIVE);
     }
 
     @Test
     void create_ShouldReturnCreatedProduct() throws Exception {
-        when(productService.create(any(Product.class))).thenReturn(product);
+        when(productService.create(any(ProductRequest.class))).thenReturn(productResponse);
 
         mockMvc.perform(post("/api/products/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(product)))
+                        .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Test Product"))
                 .andExpect(jsonPath("$.price").value(99.99));
 
-        verify(productService, times(1)).create(any(Product.class));
+        verify(productService, times(1)).create(any(ProductRequest.class));
     }
 
     @Test
     void findAll_ShouldReturnPageOfProducts() throws Exception {
-        Page<Product> page = new PageImpl<>(Arrays.asList(product));
+        Page<ProductResponse> page = new PageImpl<>(Arrays.asList(productResponse));
         when(productService.findAll(any(PageRequest.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/products")
@@ -80,7 +88,7 @@ class ProductControllerTest {
 
     @Test
     void findById_WhenProductExists_ShouldReturnProduct() throws Exception {
-        when(productService.findById("1")).thenReturn(product);
+        when(productService.findById("1")).thenReturn(productResponse);
 
         mockMvc.perform(get("/api/products/get/id/1"))
                 .andExpect(status().isOk())
@@ -101,7 +109,7 @@ class ProductControllerTest {
 
     @Test
     void findByName_ShouldReturnProduct() throws Exception {
-        when(productService.findByName("Test Product")).thenReturn(product);
+        when(productService.findByName("Test Product")).thenReturn(productResponse);
 
         mockMvc.perform(get("/api/products/get/name/Test Product"))
                 .andExpect(status().isOk())
@@ -112,7 +120,7 @@ class ProductControllerTest {
 
     @Test
     void findByProductState_ShouldReturnListOfProducts() throws Exception {
-        List<Product> products = Arrays.asList(product);
+        List<ProductResponse> products = Arrays.asList(productResponse);
         when(productService.findByProductState(ProductState.ACTIVE)).thenReturn(products);
 
         mockMvc.perform(get("/api/products/get/state/ACTIVE"))
@@ -124,18 +132,23 @@ class ProductControllerTest {
 
     @Test
     void update_ShouldReturnUpdatedProduct() throws Exception {
-        Product updatedProduct = new Product();
-        updatedProduct.setName("Updated Product");
-        updatedProduct.setPrice(149.99);
+        ProductRequest updatedRequest = new ProductRequest();
+        updatedRequest.setName("Updated Product");
+        updatedRequest.setPrice(149.99);
 
-        when(productService.update(eq("1"), any(Product.class))).thenReturn(updatedProduct);
+        ProductResponse updatedResponse = new ProductResponse();
+        updatedResponse.setId("1");
+        updatedResponse.setName("Updated Product");
+        updatedResponse.setPrice(149.99);
+
+        when(productService.update(eq("1"), any(ProductRequest.class))).thenReturn(updatedResponse);
 
         mockMvc.perform(put("/api/products/update/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedProduct)))
+                        .content(objectMapper.writeValueAsString(updatedRequest)))
                 .andExpect(status().isOk());
 
-        verify(productService, times(1)).update(eq("1"), any(Product.class));
+        verify(productService, times(1)).update(eq("1"), any(ProductRequest.class));
     }
 
     @Test

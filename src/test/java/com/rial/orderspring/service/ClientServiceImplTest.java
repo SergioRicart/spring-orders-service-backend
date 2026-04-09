@@ -1,7 +1,8 @@
 package com.rial.orderspring.service;
 
+import com.rial.orderspring.dto.request.ClientRequest;
+import com.rial.orderspring.dto.response.ClientResponse;
 import com.rial.orderspring.exception.ClientNotFoundException;
-import com.rial.orderspring.model.Client;
 import com.rial.orderspring.repository.ClientRepository;
 import com.rial.orderspring.service.impl.ClientServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,35 +32,41 @@ class ClientServiceImplTest {
     @InjectMocks
     private ClientServiceImpl clientService;
 
-    private Client client;
+    private ClientResponse clientResponse;
+    private ClientRequest clientRequest;
 
     @BeforeEach
     void setUp() {
-        client = new Client();
-        client.setId("123");
-        client.setName("John Doe");
-        client.setEmail("john@example.com");
-        client.setPhone("123456789");
+        clientRequest = new ClientRequest();
+        clientRequest.setName("John Doe");
+        clientRequest.setEmail("john@example.com");
+        clientRequest.setPhone("123456789");
+
+        clientResponse = new ClientResponse();
+        clientResponse.setId("123");
+        clientResponse.setName("John Doe");
+        clientResponse.setEmail("john@example.com");
+        clientResponse.setPhone("123456789");
     }
 
     @Test
     void create_ShouldReturnSavedClient() {
-        when(clientRepository.save(any(Client.class))).thenReturn(client);
+        when(clientRepository.save(any(ClientRequest.class))).thenReturn(clientResponse);
 
-        Client result = clientService.create(client);
+        ClientResponse result = clientService.create(clientRequest);
 
         assertNotNull(result);
         assertEquals("John Doe", result.getName());
-        verify(clientRepository, times(1)).save(client);
+        verify(clientRepository, times(1)).save(any(ClientRequest.class));
     }
 
     @Test
     void findAll_ShouldReturnPageOfClients() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Client> page = new PageImpl<>(Arrays.asList(client));
+        Page<ClientResponse> page = new PageImpl<>(Arrays.asList(clientResponse));
         when(clientRepository.findAll(pageable)).thenReturn(page);
 
-        Page<Client> result = clientService.findAll(pageable);
+        Page<ClientResponse> result = clientService.findAll(pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
@@ -68,9 +75,9 @@ class ClientServiceImplTest {
 
     @Test
     void findById_WhenClientExists_ShouldReturnClient() {
-        when(clientRepository.findById("123")).thenReturn(Optional.of(client));
+        when(clientRepository.findById("123")).thenReturn(Optional.of(clientResponse));
 
-        Client result = clientService.findById("123");
+        ClientResponse result = clientService.findById("123");
 
         assertNotNull(result);
         assertEquals("123", result.getId());
@@ -88,9 +95,9 @@ class ClientServiceImplTest {
 
     @Test
     void findByName_WhenClientExists_ShouldReturnClient() {
-        when(clientRepository.findByName("John Doe")).thenReturn(Optional.of(client));
+        when(clientRepository.findByName("John Doe")).thenReturn(Optional.of(clientResponse));
 
-        Client result = clientService.findByName("John Doe");
+        ClientResponse result = clientService.findByName("John Doe");
 
         assertNotNull(result);
         assertEquals("John Doe", result.getName());
@@ -98,9 +105,9 @@ class ClientServiceImplTest {
 
     @Test
     void findByEmail_WhenClientExists_ShouldReturnClient() {
-        when(clientRepository.findByEmail("john@example.com")).thenReturn(Optional.of(client));
+        when(clientRepository.findByEmail("john@example.com")).thenReturn(Optional.of(clientResponse));
 
-        Client result = clientService.findByEmail("john@example.com");
+        ClientResponse result = clientService.findByEmail("john@example.com");
 
         assertNotNull(result);
         assertEquals("john@example.com", result.getEmail());
@@ -108,28 +115,28 @@ class ClientServiceImplTest {
 
     @Test
     void update_ShouldReturnUpdatedClient() {
-        Client updatedClient = new Client();
-        updatedClient.setName("Jane Doe");
-        updatedClient.setEmail("jane@example.com");
-        updatedClient.setPhone("987654321");
+        ClientRequest updatedRequest = new ClientRequest();
+        updatedRequest.setName("Jane Doe");
+        updatedRequest.setEmail("jane@example.com");
+        updatedRequest.setPhone("987654321");
 
-        when(clientRepository.findById("123")).thenReturn(Optional.of(client));
-        when(clientRepository.save(any(Client.class))).thenReturn(client);
+        when(clientRepository.findById("123")).thenReturn(Optional.of(clientResponse));
+        when(clientRepository.save(any(ClientRequest.class))).thenReturn(clientResponse);
 
-        Client result = clientService.update("123", updatedClient);
+        ClientResponse result = clientService.update("123", updatedRequest);
 
         assertNotNull(result);
-        verify(clientRepository, times(1)).save(any(Client.class));
+        verify(clientRepository, times(1)).save(any(ClientRequest.class));
     }
 
     @Test
     void deleteById_WhenClientExists_ShouldDeleteClient() {
-        when(clientRepository.findById("123")).thenReturn(Optional.of(client));
-        doNothing().when(clientRepository).delete(client);
+        when(clientRepository.findById("123")).thenReturn(Optional.of(clientResponse));
+        doNothing().when(clientRepository).delete(any(ClientResponse.class));
 
         clientService.deleteById("123");
 
-        verify(clientRepository, times(1)).delete(client);
+        verify(clientRepository, times(1)).delete(any(ClientResponse.class));
     }
 
     @Test

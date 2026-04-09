@@ -1,8 +1,9 @@
 package com.rial.orderspring.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rial.orderspring.dto.request.ClientRequest;
+import com.rial.orderspring.dto.response.ClientResponse;
 import com.rial.orderspring.exception.ClientNotFoundException;
-import com.rial.orderspring.model.Client;
 import com.rial.orderspring.service.ClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,35 +35,41 @@ class ClientControllerTest {
     @MockitoBean
     private ClientService clientService;
 
-    private Client client;
+    private ClientResponse clientResponse;
+    private ClientRequest clientRequest;
 
     @BeforeEach
     void setUp() {
-        client = new Client();
-        client.setId("123");
-        client.setName("John Doe");
-        client.setEmail("john@example.com");
-        client.setPhone("123456789");
+        clientResponse = new ClientResponse();
+        clientResponse.setId("123");
+        clientResponse.setName("John Doe");
+        clientResponse.setEmail("john@example.com");
+        clientResponse.setPhone("123456789");
+
+        clientRequest = new ClientRequest();
+        clientRequest.setName("John Doe");
+        clientRequest.setEmail("john@example.com");
+        clientRequest.setPhone("123456789");
     }
 
     @Test
     void create_ShouldReturnCreatedClient() throws Exception {
-        when(clientService.create(any(Client.class))).thenReturn(client);
+        when(clientService.create(any(ClientRequest.class))).thenReturn(clientResponse);
 
-        mockMvc.perform(get("/api/clients/create")
+        mockMvc.perform(post("/api/clients/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(client)))
+                        .content(objectMapper.writeValueAsString(clientRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("123"))
                 .andExpect(jsonPath("$.name").value("John Doe"))
                 .andExpect(jsonPath("$.email").value("john@example.com"));
 
-        verify(clientService, times(1)).create(any(Client.class));
+        verify(clientService, times(1)).create(any(ClientRequest.class));
     }
 
     @Test
     void findAll_ShouldReturnPageOfClients() throws Exception {
-        Page<Client> page = new PageImpl<>(Arrays.asList(client));
+        Page<ClientResponse> page = new PageImpl<>(Arrays.asList(clientResponse));
         when(clientService.findAll(any(PageRequest.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/clients")
@@ -77,7 +84,7 @@ class ClientControllerTest {
 
     @Test
     void findById_WhenClientExists_ShouldReturnClient() throws Exception {
-        when(clientService.findById("123")).thenReturn(client);
+        when(clientService.findById("123")).thenReturn(clientResponse);
 
         mockMvc.perform(get("/api/clients/get/id/123"))
                 .andExpect(status().isOk())
@@ -98,7 +105,7 @@ class ClientControllerTest {
 
     @Test
     void findByName_ShouldReturnClient() throws Exception {
-        when(clientService.findByName("John Doe")).thenReturn(client);
+        when(clientService.findByName("John Doe")).thenReturn(clientResponse);
 
         mockMvc.perform(get("/api/clients/get/name/John Doe"))
                 .andExpect(status().isOk())
@@ -109,7 +116,7 @@ class ClientControllerTest {
 
     @Test
     void findByPhone_ShouldReturnClient() throws Exception {
-        when(clientService.findByPhone("123456789")).thenReturn(client);
+        when(clientService.findByPhone("123456789")).thenReturn(clientResponse);
 
         mockMvc.perform(get("/api/clients/get/phone/123456789"))
                 .andExpect(status().isOk())
@@ -118,7 +125,7 @@ class ClientControllerTest {
 
     @Test
     void findByEmail_ShouldReturnClient() throws Exception {
-        when(clientService.findByEmail("john@example.com")).thenReturn(client);
+        when(clientService.findByEmail("john@example.com")).thenReturn(clientResponse);
 
         mockMvc.perform(get("/api/clients/get/email/john@example.com"))
                 .andExpect(status().isOk())
@@ -127,18 +134,23 @@ class ClientControllerTest {
 
     @Test
     void update_ShouldReturnUpdatedClient() throws Exception {
-        Client updatedClient = new Client();
-        updatedClient.setName("Jane Doe");
-        updatedClient.setEmail("jane@example.com");
+        ClientRequest updateRequest = new ClientRequest();
+        updateRequest.setName("Jane Doe");
+        updateRequest.setEmail("jane@example.com");
 
-        when(clientService.update(eq("123"), any(Client.class))).thenReturn(updatedClient);
+        ClientResponse updatedClientResponse = new ClientResponse();
+        updatedClientResponse.setId("123");
+        updatedClientResponse.setName("Jane Doe");
+        updatedClientResponse.setEmail("jane@example.com");
+
+        when(clientService.update(eq("123"), any(ClientRequest.class))).thenReturn(updatedClientResponse);
 
         mockMvc.perform(put("/api/clients/update/123")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedClient)))
+                        .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk());
 
-        verify(clientService, times(1)).update(eq("123"), any(Client.class));
+        verify(clientService, times(1)).update(eq("123"), any(ClientRequest.class));
     }
 
     @Test

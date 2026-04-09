@@ -1,32 +1,22 @@
 package com.rial.orderspring.service;
 
+import com.rial.orderspring.dto.request.OrderRequest;
+import com.rial.orderspring.dto.response.OrderResponse;
 import com.rial.orderspring.enums.OrderState;
-import com.rial.orderspring.model.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderService {
-
-
-    Order create(Order order);
-
-    Page<Order> findAll(Pageable pageable);
-
-    Order findById(String id);
-
-    List<Order> findByOrderDateTime(LocalDateTime orderDateTime);
-
-    List<Order> findByDeliveryDateTime(LocalDateTime deliveryDateTime);
-
-    List<Order> findByOrderState(OrderState orderState);
-
-    List<Order> findByClientId(String clientId);
-    
-    Order update(String id, Order updatedOrder);
-
+    OrderResponse create(OrderRequest request);
+    Page<OrderResponse> findAll(Pageable pageable);
+    OrderResponse findById(String id);
+    List<OrderResponse> findByOrderDateTime(LocalDateTime orderDateTime);
+    List<OrderResponse> findByDeliveryDateTime(LocalDateTime deliveryDateTime);
+    List<OrderResponse> findByOrderState(OrderState orderState);
+    List<OrderResponse> findByClientId(String clientId);
+    OrderResponse update(String id, OrderRequest request);
     void deleteById(String id);
 }

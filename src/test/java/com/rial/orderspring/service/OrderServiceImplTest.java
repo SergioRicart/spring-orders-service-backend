@@ -1,10 +1,10 @@
 package com.rial.orderspring.service;
 
+import com.rial.orderspring.dto.request.OrderRequest;
+import com.rial.orderspring.dto.response.OrderResponse;
 import com.rial.orderspring.enums.OrderState;
 import com.rial.orderspring.enums.PaymentState;
 import com.rial.orderspring.exception.OrderNotFoundException;
-import com.rial.orderspring.model.Client;
-import com.rial.orderspring.model.Order;
 import com.rial.orderspring.repository.OrderRepository;
 import com.rial.orderspring.service.impl.OrderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,48 +36,51 @@ class OrderServiceImplTest {
     @InjectMocks
     private OrderServiceImpl orderService;
 
-    private Order order;
-    private Client client;
+    private OrderResponse orderResponse;
+    private OrderRequest orderRequest;
     private LocalDateTime orderDateTime;
     private LocalDateTime deliveryDateTime;
 
     @BeforeEach
     void setUp() {
-        client = new Client();
-        client.setId("client-1");
-        client.setName("Test Client");
-
         orderDateTime = LocalDateTime.now();
         deliveryDateTime = LocalDateTime.now().plusDays(3);
 
-        order = new Order();
-        order.setId("order-1");
-        order.setOrderDateTime(orderDateTime);
-        order.setDeliveryDateTime(deliveryDateTime);
-        order.setPaymentState(PaymentState.PAID);
-        order.setOrderState(OrderState.ORDERED);
-        order.setClient(client);
+        orderRequest = new OrderRequest();
+        orderRequest.setOrderDateTime(orderDateTime);
+        orderRequest.setDeliveryDateTime(deliveryDateTime);
+        orderRequest.setPaymentState(PaymentState.PAID);
+        orderRequest.setOrderState(OrderState.ORDERED);
+        orderRequest.setClientId("client-1");
+
+        orderResponse = new OrderResponse();
+        orderResponse.setId("order-1");
+        orderResponse.setOrderDateTime(orderDateTime);
+        orderResponse.setDeliveryDateTime(deliveryDateTime);
+        orderResponse.setPaymentState(PaymentState.PAID);
+        orderResponse.setOrderState(OrderState.ORDERED);
+        orderResponse.setClientId("client-1");
     }
 
     @Test
     void create_ShouldReturnSavedOrder() {
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(orderRepository.save(any(OrderRequest.class))).thenReturn(orderResponse);
 
-        Order result = orderService.create(order);
+        OrderResponse result = orderService.create(orderRequest);
 
         assertNotNull(result);
         assertEquals(OrderState.ORDERED, result.getOrderState());
         assertEquals(PaymentState.PAID, result.getPaymentState());
-        verify(orderRepository, times(1)).save(order);
+        verify(orderRepository, times(1)).save(any(OrderRequest.class));
     }
 
     @Test
     void findAll_ShouldReturnPageOfOrders() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Order> page = new PageImpl<>(Arrays.asList(order));
+        Page<OrderResponse> page = new PageImpl<>(Arrays.asList(orderResponse));
         when(orderRepository.findAll(pageable)).thenReturn(page);
 
-        Page<Order> result = orderService.findAll(pageable);
+        Page<OrderResponse> result = orderService.findAll(pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
@@ -86,9 +89,9 @@ class OrderServiceImplTest {
 
     @Test
     void findById_WhenOrderExists_ShouldReturnOrder() {
-        when(orderRepository.findById("order-1")).thenReturn(Optional.of(order));
+        when(orderRepository.findById("order-1")).thenReturn(Optional.of(orderResponse));
 
-        Order result = orderService.findById("order-1");
+        OrderResponse result = orderService.findById("order-1");
 
         assertNotNull(result);
         assertEquals("order-1", result.getId());
@@ -106,11 +109,11 @@ class OrderServiceImplTest {
 
     @Test
     void findByOrderDateTime_ShouldReturnListOfOrders() {
-        List<Order> orders = Arrays.asList(order);
+        List<OrderResponse> orders = Arrays.asList(orderResponse);
         when(orderRepository.findByOrderDateTime(orderDateTime))
                 .thenReturn(Optional.of(orders));
 
-        List<Order> result = orderService.findByOrderDateTime(orderDateTime);
+        List<OrderResponse> result = orderService.findByOrderDateTime(orderDateTime);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -119,11 +122,11 @@ class OrderServiceImplTest {
 
     @Test
     void findByDeliveryDateTime_ShouldReturnListOfOrders() {
-        List<Order> orders = Arrays.asList(order);
+        List<OrderResponse> orders = Arrays.asList(orderResponse);
         when(orderRepository.findByDeliveryDateTime(deliveryDateTime))
                 .thenReturn(Optional.of(orders));
 
-        List<Order> result = orderService.findByDeliveryDateTime(deliveryDateTime);
+        List<OrderResponse> result = orderService.findByDeliveryDateTime(deliveryDateTime);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -131,11 +134,11 @@ class OrderServiceImplTest {
 
     @Test
     void findByOrderState_ShouldReturnListOfOrders() {
-        List<Order> orders = Arrays.asList(order);
+        List<OrderResponse> orders = Arrays.asList(orderResponse);
         when(orderRepository.findByOrderState(OrderState.ORDERED))
                 .thenReturn(Optional.of(orders));
 
-        List<Order> result = orderService.findByOrderState(OrderState.ORDERED);
+        List<OrderResponse> result = orderService.findByOrderState(OrderState.ORDERED);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -144,11 +147,11 @@ class OrderServiceImplTest {
 
     @Test
     void findByClientId_ShouldReturnListOfOrders() {
-        List<Order> orders = Arrays.asList(order);
+        List<OrderResponse> orders = Arrays.asList(orderResponse);
         when(orderRepository.findByClientId("client-1"))
                 .thenReturn(Optional.of(orders));
 
-        List<Order> result = orderService.findByClientId("client-1");
+        List<OrderResponse> result = orderService.findByClientId("client-1");
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -156,27 +159,27 @@ class OrderServiceImplTest {
 
     @Test
     void update_ShouldReturnUpdatedOrder() {
-        Order updatedOrder = new Order();
-        updatedOrder.setOrderState(OrderState.IN_PROGRESS);
-        updatedOrder.setPaymentState(PaymentState.PAID);
+        OrderRequest updatedRequest = new OrderRequest();
+        updatedRequest.setOrderState(OrderState.IN_PROGRESS);
+        updatedRequest.setPaymentState(PaymentState.PAID);
 
-        when(orderRepository.findById("order-1")).thenReturn(Optional.of(order));
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(orderRepository.findById("order-1")).thenReturn(Optional.of(orderResponse));
+        when(orderRepository.save(any(OrderRequest.class))).thenReturn(orderResponse);
 
-        Order result = orderService.update("order-1", updatedOrder);
+        OrderResponse result = orderService.update("order-1", updatedRequest);
 
         assertNotNull(result);
-        verify(orderRepository, times(1)).save(any(Order.class));
+        verify(orderRepository, times(1)).save(any(OrderRequest.class));
     }
 
     @Test
     void deleteById_WhenOrderExists_ShouldDeleteOrder() {
-        when(orderRepository.findById("order-1")).thenReturn(Optional.of(order));
-        doNothing().when(orderRepository).delete(order);
+        when(orderRepository.findById("order-1")).thenReturn(Optional.of(orderResponse));
+        doNothing().when(orderRepository).delete(any(OrderResponse.class));
 
         orderService.deleteById("order-1");
 
-        verify(orderRepository, times(1)).delete(order);
+        verify(orderRepository, times(1)).delete(any(OrderResponse.class));
     }
 
     @Test

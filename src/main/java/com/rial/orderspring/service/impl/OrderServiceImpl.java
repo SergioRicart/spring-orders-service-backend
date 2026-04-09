@@ -1,11 +1,13 @@
 package com.rial.orderspring.service.impl;
 
+import com.rial.orderspring.dto.request.OrderRequest;
+import com.rial.orderspring.dto.response.OrderResponse;
 import com.rial.orderspring.enums.OrderState;
 import com.rial.orderspring.exception.OrderNotFoundException;
+import com.rial.orderspring.mapper.OrderMapper;
 import com.rial.orderspring.model.Order;
 import com.rial.orderspring.repository.OrderRepository;
 import com.rial.orderspring.service.OrderService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,61 +19,72 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
+        this.orderMapper = orderMapper;
     }
 
     @Override
-    public Order create(Order order) {
-        return orderRepository.save(order);
+    public OrderResponse create(OrderRequest request) {
+        return orderMapper.toResponse(orderRepository.save(orderMapper.toEntity(request)));
     }
 
     @Override
-    public Page<Order> findAll(Pageable pageable) {
-        return orderRepository.findAll(pageable);
+    public Page<OrderResponse> findAll(Pageable pageable) {
+        return orderRepository.findAll(pageable).map(orderMapper::toResponse);
     }
 
     @Override
-    public Order findById(String id) {
-        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+    public OrderResponse findById(String id) {
+        return orderMapper.toResponse(orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException(id)));
     }
 
     @Override
-    public List<Order> findByOrderDateTime(LocalDateTime orderDateTime) {
-        return orderRepository.findByOrderDateTime(orderDateTime).orElseThrow(() -> new OrderNotFoundException(orderDateTime));
+    public List<OrderResponse> findByOrderDateTime(LocalDateTime orderDateTime) {
+        return orderRepository.findByOrderDateTime(orderDateTime)
+                .orElseThrow(() -> new OrderNotFoundException(orderDateTime))
+                .stream().map(orderMapper::toResponse).toList();
     }
 
     @Override
-    public List<Order> findByDeliveryDateTime(LocalDateTime deliveryDateTime) {
-        return orderRepository.findByDeliveryDateTime(deliveryDateTime).orElseThrow(() -> new OrderNotFoundException(deliveryDateTime));
+    public List<OrderResponse> findByDeliveryDateTime(LocalDateTime deliveryDateTime) {
+        return orderRepository.findByDeliveryDateTime(deliveryDateTime)
+                .orElseThrow(() -> new OrderNotFoundException(deliveryDateTime))
+                .stream().map(orderMapper::toResponse).toList();
     }
 
     @Override
-    public List<Order> findByOrderState(OrderState orderState) {
-        return orderRepository.findByOrderState(orderState).orElseThrow(() -> new OrderNotFoundException(orderState.name()));
+    public List<OrderResponse> findByOrderState(OrderState orderState) {
+        return orderRepository.findByOrderState(orderState)
+                .orElseThrow(() -> new OrderNotFoundException(orderState.name()))
+                .stream().map(orderMapper::toResponse).toList();
     }
 
     @Override
-    public List<Order> findByClientId(String clientId) {
-
-        return orderRepository.findByClientId(clientId).orElseThrow(() -> new OrderNotFoundException(clientId));
+    public List<OrderResponse> findByClientId(String clientId) {
+        return orderRepository.findByClientId(clientId)
+                .orElseThrow(() -> new OrderNotFoundException(clientId))
+                .stream().map(orderMapper::toResponse).toList();
     }
 
     @Override
-    public Order update(String id, Order updatedOrder) {
-        Order actualOrder = findById(id);
-
-        BeanUtils.copyProperties(updatedOrder, actualOrder, "id");
-
-        return orderRepository.save(actualOrder);
+    public OrderResponse update(String id, OrderRequest request) {
+        Order actual = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException(id));
+        actual.setOrderDateTime(request.getOrderDateTime());
+        actual.setDeliveryDateTime(request.getDeliveryDateTime());
+        actual.setPaymentState(request.getPaymentState());
+        actual.setOrderState(request.getOrderState());
+        return orderMapper.toResponse(orderRepository.save(actual));
     }
 
     @Override
     public void deleteById(String id) {
-
-        Order order = findById(id);
-
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException(id));
         orderRepository.delete(order);
     }
 }

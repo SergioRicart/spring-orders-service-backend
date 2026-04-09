@@ -1,11 +1,11 @@
 package com.rial.orderspring.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rial.orderspring.dto.request.OrderRequest;
+import com.rial.orderspring.dto.response.OrderResponse;
 import com.rial.orderspring.enums.OrderState;
 import com.rial.orderspring.enums.PaymentState;
 import com.rial.orderspring.exception.OrderNotFoundException;
-import com.rial.orderspring.model.Client;
-import com.rial.orderspring.model.Order;
 import com.rial.orderspring.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,47 +39,50 @@ class OrderControllerTest {
     @MockitoBean
     private OrderService orderService;
 
-    private Order order;
-    private Client client;
+    private OrderResponse orderResponse;
+    private OrderRequest orderRequest;
     private LocalDateTime orderDateTime;
     private LocalDateTime deliveryDateTime;
 
     @BeforeEach
     void setUp() {
-        client = new Client();
-        client.setId("client-1");
-        client.setName("Test Client");
-
         orderDateTime = LocalDateTime.of(2024, 1, 1, 10, 0);
         deliveryDateTime = LocalDateTime.of(2024, 1, 4, 10, 0);
 
-        order = new Order();
-        order.setId("order-1");
-        order.setOrderDateTime(orderDateTime);
-        order.setDeliveryDateTime(deliveryDateTime);
-        order.setPaymentState(PaymentState.PAID);
-        order.setOrderState(OrderState.ORDERED);
-        order.setClient(client);
+        orderRequest = new OrderRequest();
+        orderRequest.setOrderDateTime(orderDateTime);
+        orderRequest.setDeliveryDateTime(deliveryDateTime);
+        orderRequest.setPaymentState(PaymentState.PAID);
+        orderRequest.setOrderState(OrderState.ORDERED);
+        orderRequest.setClientId("client-1");
+
+        orderResponse = new OrderResponse();
+        orderResponse.setId("order-1");
+        orderResponse.setOrderDateTime(orderDateTime);
+        orderResponse.setDeliveryDateTime(deliveryDateTime);
+        orderResponse.setPaymentState(PaymentState.PAID);
+        orderResponse.setOrderState(OrderState.ORDERED);
+        orderResponse.setClientId("client-1");
     }
 
     @Test
     void create_ShouldReturnCreatedOrder() throws Exception {
-        when(orderService.create(any(Order.class))).thenReturn(order);
+        when(orderService.create(any(OrderRequest.class))).thenReturn(orderResponse);
 
         mockMvc.perform(post("/api/orders/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(order)))
+                        .content(objectMapper.writeValueAsString(orderRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("order-1"))
                 .andExpect(jsonPath("$.orderState").value("ORDERED"))
                 .andExpect(jsonPath("$.paymentState").value("PAID"));
 
-        verify(orderService, times(1)).create(any(Order.class));
+        verify(orderService, times(1)).create(any(OrderRequest.class));
     }
 
     @Test
     void findAll_ShouldReturnPageOfOrders() throws Exception {
-        Page<Order> page = new PageImpl<>(Arrays.asList(order));
+        Page<OrderResponse> page = new PageImpl<>(Arrays.asList(orderResponse));
         when(orderService.findAll(any(PageRequest.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/orders")
@@ -94,7 +97,7 @@ class OrderControllerTest {
 
     @Test
     void findById_WhenOrderExists_ShouldReturnOrder() throws Exception {
-        when(orderService.findById("order-1")).thenReturn(order);
+        when(orderService.findById("order-1")).thenReturn(orderResponse);
 
         mockMvc.perform(get("/api/orders/get/id/order-1"))
                 .andExpect(status().isOk())
@@ -115,7 +118,7 @@ class OrderControllerTest {
 
     @Test
     void findByOrderState_ShouldReturnListOfOrders() throws Exception {
-        List<Order> orders = Arrays.asList(order);
+        List<OrderResponse> orders = Arrays.asList(orderResponse);
         when(orderService.findByOrderState(OrderState.ORDERED)).thenReturn(orders);
 
         mockMvc.perform(get("/api/orders/get/orderState/ORDERED"))
@@ -127,7 +130,7 @@ class OrderControllerTest {
 
     @Test
     void findByOrderDateTime_ShouldReturnListOfOrders() throws Exception {
-        List<Order> orders = Arrays.asList(order);
+        List<OrderResponse> orders = Arrays.asList(orderResponse);
         when(orderService.findByOrderDateTime(any(LocalDateTime.class))).thenReturn(orders);
 
         mockMvc.perform(get("/api/orders/get/orderDate/2024-01-01T10:00:00"))
@@ -139,7 +142,7 @@ class OrderControllerTest {
 
     @Test
     void findByDeliveryDateTime_ShouldReturnListOfOrders() throws Exception {
-        List<Order> orders = Arrays.asList(order);
+        List<OrderResponse> orders = Arrays.asList(orderResponse);
         when(orderService.findByDeliveryDateTime(any(LocalDateTime.class))).thenReturn(orders);
 
         mockMvc.perform(get("/api/orders/get/deliveryDate/2024-01-04T10:00:00"))
